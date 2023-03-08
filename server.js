@@ -1,32 +1,55 @@
-require('dotenv').config();
-const session = require('express-session');
-const express = require('express');
-const passport = require('passport');
-const db = require('./app/models');
-const path = require("path");
-const sendEmail = require('./app/utilities/sendemail')
+const dotenv = require('dotenv');
+dotenv.config();
 
-app.use('/public', express.static(path.join(__dirname, "public")));
-app.set('view engine', 'ejs');
 
-app.use(session({ secret: process.env.SECRET_KEY }));
-app.use(passport.initialize());
-app.use(passport.session());
+const express = require("express");
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+const app = express();
 
+const db = require("./app/models");
 db.sequelize.sync()
   .then(() => {
-    console.log('Synced db.');
+    console.log("Synced db.");
   })
   .catch((err) => {
-    console.log('Failed to sync db: ' + err.message);
+
+    console.log("Failed to sync db: " + err.message);
   });
 
-require('./app/routes/user.routes')(app);
+//   db.sequelize.sync({ force: true }).then(() => {
+//     console.log("Drop and re-sync db.");
+//   });
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}.`);
-});
+
+const bodyParser = require("body-parser");
+const cors = require("cors");
+
+
+
+
+
+var corsOptions = {
+    origin: "http://localhost:8081"
+  };
+
+
+
+  app.use(cors(corsOptions));
+
+  app.use(express.urlencoded({ extended: true }));
+  app.use(express.json());
+
+  require("./app/routes/user.routes")(app);
+  const port = process.env.PORT || 5000;
+  app.listen(port, () => {
+
+    console.log("Server is running on port", port);
+  });  
+
+  
+
+
+  app.get("/", (req, res) => {
+    return res.status(200).json({ message: "Welcome Home." });
+  });
+  
