@@ -1,6 +1,6 @@
 module.exports = {
   development: {
-    url: "postgres://postgres:test123@127.0.0.1:5432/teamadb",
+    url: "postgres://postgres:root@127.0.0.1:5432/teamadb",
     options: {
       operatorsAliases: false,
       pool: {
@@ -14,7 +14,7 @@ module.exports = {
 
 
   testing: {
-    url: "postgres://postgres:test123@127.0.0.1:5432/testdb",
+    url: "postgres://postgres:root@127.0.0.1:5432/testdb",
     options: {
       operatorsAliases: false,
       pool: {
@@ -28,7 +28,7 @@ module.exports = {
 
 
   production: {
-    url: "postgres://postgres:test123@127.0.0.1:5432/production",
+    url: "postgres://postgres:root@127.0.0.1:5432/production",
     options: {
       operatorsAliases: false,
       pool: {

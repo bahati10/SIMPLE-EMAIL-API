@@ -1,27 +1,39 @@
-module.exports = app => {
-  const users = require("../controllers/user.controller.js");
+const passport = require('passport');
+const jwt = require('jsonwebtoken');
 
-  var router = require("express").Router();
+const users = require("../controllers/user.controller.js");
+
+const router = require("express").Router();
+
 
   // Create a new User
   router.post("/create", users.create);
-  // LOGIN
-  router.post("/login", users.login);
+  // // LOGIN
+  // router.post("/login", users.login);
 
   // Retrieve all Users
-  router.get("/", users.findAll);
+  router.get("/all", users.findAll);
 
   // Retrieve a single User with id
-  router.get("/:id", users.findOne);
+  router.get("/one/:id", users.findOne);
 
   // Update a User with id
-  router.put("/:id", users.update);
+  router.put("/update/:id", users.update);
 
   // Delete a User with id
-  router.delete("/:id", users.delete);
+  router.delete("/delete/:id", users.delete);
 
   // Delete all Users
-  router.delete("/", users.deleteAll);
+  router.delete("/deleteall", users.deleteAll);
 
-  app.use("/api/users", router);
-};
+
+
+router.get('/auth/google', passport.authenticate('google', { scope: ['email', 'profile'] }));
+
+
+router.get('/google/callback', passport.authenticate('google', { session: false }), (req, res) => {
+  const token = jwt.sign({ id: req.user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+  res.json({ token });
+});
+
+module.exports=router;
